@@ -3,7 +3,7 @@ name: Deploy Flutter Web to GitHub Pages
 on:
   push:
     branches:
-      - main  # Deploy every time you push to main branch
+      - main  # Runs every time you push to main
 
 permissions:
   contents: write  # Required for deployment
@@ -19,16 +19,17 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3' # match your local version
+          flutter-version: '3.29.3' # match your Flutter SDK version
 
       - name: Install dependencies
         run: flutter pub get
 
       - name: Build Flutter Web
-        run: flutter build web --release
+        run: flutter build web --release --base-href "/my_portfolio/"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build/web
+          force_orphan: true   # ✅ ensures a clean gh-pages branch
