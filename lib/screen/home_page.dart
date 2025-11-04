@@ -1,94 +1,140 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:my_portfolio/core/constants.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final scrollController = ScrollController();
+  final experienceKey = GlobalKey();
+  final projectsKey = GlobalKey();
+  final contactKey = GlobalKey();
+
+  String userName = 'Loading...'; // 👈 Default until data fetched
+  String mobileNumber = 'Loading...'; // 👈 Default until data fetched
+  String emailId = 'Loading...'; // 👈 Default until data fetched
+  String profilePic = ''; // 👈 Default until data fetched
+  String bgImage = ''; // 👈 Default until data fetched
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserName();
+  }
+
+  /// 🔹 Fetch user name from Firebase Realtime Database
+  Future<void> _fetchUserName() async {
+    try {
+      final ref = FirebaseDatabase.instance
+          .ref(Constants.userDetails)
+          .child('admin_info');
+      final snapshot = await ref.get();
+
+      if (snapshot.exists) {
+        final data = snapshot.value as Map<dynamic, dynamic>;
+        setState(() {
+          userName = data['name'] ?? 'Unknown User';
+          mobileNumber = data['mobileNumber'] ?? '';
+          emailId = data['emailId'] ?? '';
+          profilePic = data['profilePic'] ?? '';
+          bgImage = data['bgImage'] ?? '';
+        });
+      } else {
+        setState(() {
+          userName = 'No Name Found';
+        });
+      }
+    } catch (e, s) {
+      debugPrint('Error fetching name: $e\n$s');
+      setState(() {
+        userName = 'Error Loading Name';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final screen = MediaQuery.of(context).size;
-
-    // 🔹 Create ScrollController and GlobalKeys
-    final scrollController = ScrollController();
-    final experienceKey = GlobalKey();
-    final projectsKey = GlobalKey();
-    final contactKey = GlobalKey();
+    bool isMobile = screen.width < 800;
 
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          bool isMobile = constraints.maxWidth < 800;
-
-          return SafeArea(
-            child: Column(
-              children: [
-                // 🔹 Pass onNavItemTap callback to HeaderBar
-                HeaderBar(
-                  onNavItemTap: (section) {
-                    switch (section) {
-                      case 'Experience':
-                        Scrollable.ensureVisible(
-                          experienceKey.currentContext!,
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.easeInOut,
-                        );
-                        break;
-                      case 'Projects':
-                        Scrollable.ensureVisible(
-                          projectsKey.currentContext!,
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.easeInOut,
-                        );
-                        break;
-                      case 'Contact':
-                        Scrollable.ensureVisible(
-                          contactKey.currentContext!,
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.easeInOut,
-                        );
-                        break;
-                      case 'Home':
-                        scrollController.animateTo(
-                          0,
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.easeInOut,
-                        );
-                        break;
-                    }
-                  },
-                ),
-
-                Expanded(
-                  child: Container(
-                    margin: !isMobile
-                        ? EdgeInsets.symmetric(
-                      horizontal: screen.width * 0.1,
-                      vertical: 16,
-                    )
-                        : EdgeInsets.zero,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: ListView(
-                      controller: scrollController,
-                      children: [
-                        const ProfileSection(),
-                        const SizedBox(height: 20),
-                        ContactRow(key: contactKey),
-                        const SizedBox(height: 12),
-                        const Divider(),
-                        const SizedBox(height: 30),
-                        SkillsAndExperience(key: experienceKey),
-                        const SizedBox(height: 40),
-                        ProjectsSection(key: projectsKey),
-                        const SizedBox(height: 50),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+      body: Column(
+        children: [
+          HeaderBar(
+            onNavItemTap: (section) {
+              switch (section) {
+                case 'Experience':
+                  Scrollable.ensureVisible(
+                    experienceKey.currentContext!,
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeInOut,
+                  );
+                  break;
+                case 'Projects':
+                  Scrollable.ensureVisible(
+                    projectsKey.currentContext!,
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeInOut,
+                  );
+                  break;
+                case 'Contact':
+                  Scrollable.ensureVisible(
+                    contactKey.currentContext!,
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeInOut,
+                  );
+                  break;
+                case 'Home':
+                  scrollController.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeInOut,
+                  );
+                  break;
+              }
+            },
+          ),
+          Expanded(
+            child: Container(
+              // color: Colors.pink.shade100,
+              margin:
+                  !isMobile
+                      ? EdgeInsets.symmetric(
+                        horizontal: screen.width * 0.1,
+                        // vertical: screen.height * 0.05,
+                      )
+                      : EdgeInsets.zero,
+              child: ListView(
+                controller: scrollController,
+                children: [
+                  ProfileSection(
+                    userName: userName,
+                    mobileNumber: mobileNumber,
+                    emailId: emailId,
+                    profilePic: profilePic,
+                    bgImage: bgImage,
+                  ), // 👈 Pass dynamic name
+                  const SizedBox(height: 20),
+                  ContactRow(key: contactKey,
+                    mobileNumber: mobileNumber,
+                    emailId: emailId,
+                    profilePic: profilePic,
+                    bgImage: bgImage,),
+                  const Divider(),
+                  const SizedBox(height: 30),
+                  SkillsAndExperience(key: experienceKey),
+                  const SizedBox(height: 40),
+                  ProjectsSection(key: projectsKey),
+                ],
+              ),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
@@ -99,10 +145,7 @@ class HomePage extends StatelessWidget {
 class HeaderBar extends StatelessWidget {
   final Function(String section) onNavItemTap; // 👈 Accept callback
 
-  const HeaderBar({
-    super.key,
-    required this.onNavItemTap,
-  });
+  const HeaderBar({super.key, required this.onNavItemTap});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +157,10 @@ class HeaderBar extends StatelessWidget {
         spacing: 18,
         children: [
           _HeaderItem(title: 'Home', onTap: () => onNavItemTap('Home')),
-          _HeaderItem(title: 'Experience', onTap: () => onNavItemTap('Experience')),
+          _HeaderItem(
+            title: 'Experience',
+            onTap: () => onNavItemTap('Experience'),
+          ),
           _HeaderItem(title: 'Projects', onTap: () => onNavItemTap('Projects')),
           _HeaderItem(title: 'Contact', onTap: () => onNavItemTap('Contact')),
         ],
@@ -127,10 +173,7 @@ class _HeaderItem extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  const _HeaderItem({
-    required this.title,
-    required this.onTap,
-  });
+  const _HeaderItem({required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -150,49 +193,74 @@ class _HeaderItem extends StatelessWidget {
 
 /// PROFILE SECTION
 class ProfileSection extends StatelessWidget {
-  const ProfileSection({super.key});
+  final String userName;
+  final String mobileNumber;
+  final String emailId;
+  final String profilePic;
+  final String bgImage;
+
+  const ProfileSection({
+    super.key,
+    required this.userName,
+    required this.mobileNumber,
+    required this.emailId,
+    required this.profilePic,
+    required this.bgImage,
+  });
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        bool isMobile = constraints.maxWidth < 800;
+        // Responsive size logic
+        final bool isMobile = constraints.maxWidth < 800;
+        final double bannerHeight = isMobile ? 200 : 300;
+        final double avatarRadius = isMobile ? 70 : 100;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(
               clipBehavior: Clip.none,
               children: [
+                // Background banner
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16),
                   ),
                   child: Image.network(
-                    'https://media.licdn.com/dms/image/v2/D4D16AQFyobAAV9ALlw/profile-displaybackgroundimage-shrink_350_1400/profile-displaybackgroundimage-shrink_350_1400/0/1704461315572?e=1763596800&v=beta&t=bdounbzeYhVQCuPPYWGNz3_33VKMJLxDef5L91sDQzQ',
-                    fit: BoxFit.fitWidth,
+                    bgImage,
+                    fit: BoxFit.cover,
                     width: double.infinity,
-                    height: 250,
+                    height: bannerHeight,
                   ),
                 ),
-                const Positioned(
-                  top: 120,
-                  left: 50,
+
+                // Profile photo overlay
+                Positioned(
+                  top: bannerHeight - avatarRadius,
+                  left: isMobile ? 20 : 50,
                   child: CircleAvatar(
-                    radius: 100,
+                    radius: avatarRadius + 5,
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
-                      radius: 95,
-                      backgroundImage: NetworkImage(
-                        'https://media.licdn.com/dms/image/v2/D4D03AQFmYACBRKiQdA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1699343417875?e=1763596800&v=beta&t=VV5PBZe6TeuvI2TBM4iWQWM50WTIhtAu98h1xGGiKe4',
-                      ),
+                      radius: avatarRadius,
+                      backgroundImage: NetworkImage(profilePic),
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 100),
-            const _ProfileInfo(),
+
+            // Add spacing equal to the half of avatar radius to push next content below it
+            SizedBox(height: avatarRadius + 30),
+
+            // User info section
+            _ProfileInfo(
+              userName: userName,
+
+            ),
           ],
         );
       },
@@ -200,25 +268,38 @@ class ProfileSection extends StatelessWidget {
   }
 }
 
+/// PROFILE INFO (can be styled freely)
 class _ProfileInfo extends StatelessWidget {
-  const _ProfileInfo();
+  final String userName;
+
+
+  const _ProfileInfo({
+    required this.userName,
+
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 50),
+    final bool isMobile = MediaQuery.of(context).size.width < 800;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 50),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Abhishek Deshpande',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            userName,
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
+          const SizedBox(height: 8),
           Text(
-            'Mobile App Developer (Flutter | Kotlin | Java)',
-            style: TextStyle(fontSize: 18),
+            'Flutter Developer | Android | iOS | Firebase | REST APIs',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: Colors.grey[700]),
           ),
-          Text('Pune, Maharashtra', style: TextStyle(fontSize: 14)),
         ],
       ),
     );
@@ -227,7 +308,18 @@ class _ProfileInfo extends StatelessWidget {
 
 /// CONTACT ROW (Responsive)
 class ContactRow extends StatelessWidget {
-  const ContactRow({super.key});
+
+  final String mobileNumber;
+  final String emailId;
+  final String profilePic;
+  final String bgImage;
+
+
+  const ContactRow({super.key,
+    required this.mobileNumber,
+    required this.emailId,
+    required this.profilePic,
+    required this.bgImage,});
 
   @override
   Widget build(BuildContext context) {
@@ -236,41 +328,42 @@ class ContactRow extends StatelessWidget {
         bool isMobile = constraints.maxWidth < 800;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
-          child: isMobile
-              ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              _ContactButton(
-                icon: Icons.call,
-                label: '+91-********72',
-                alignStart: true,
-              ),
-              _ContactButton(
-                icon: Icons.mail,
-                label: 'abhi.pande215@gmail.com',
-                alignStart: true,
-              ),
-              _ContactButton(
-                icon: Icons.insert_link_rounded,
-                label: 'LinkedIn',
-                alignStart: true,
-              ),
-            ],
-          )
-              : Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              _ContactButton(icon: Icons.call, label: '+91-********72'),
-              _ContactButton(
-                icon: Icons.mail,
-                label: 'abhi.pande215@gmail.com',
-              ),
-              _ContactButton(
-                icon: Icons.insert_link_rounded,
-                label: 'LinkedIn',
-              ),
-            ],
-          ),
+          child:
+              isMobile
+                  ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _ContactButton(
+                        icon: Icons.call,
+                        label: mobileNumber,
+                        alignStart: true,
+                      ),
+                      _ContactButton(
+                        icon: Icons.mail,
+                        label: emailId,
+                        alignStart: true,
+                      ),
+                      _ContactButton(
+                        icon: Icons.insert_link_rounded,
+                        label: 'LinkedIn',
+                        alignStart: true,
+                      ),
+                    ],
+                  )
+                  : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _ContactButton(icon: Icons.call, label: mobileNumber),
+                      _ContactButton(
+                        icon: Icons.mail,
+                        label: emailId,
+                      ),
+                      _ContactButton(
+                        icon: Icons.insert_link_rounded,
+                        label: 'LinkedIn',
+                      ),
+                    ],
+                  ),
         );
       },
     );
@@ -312,23 +405,24 @@ class SkillsAndExperience extends StatelessWidget {
         bool isMobile = constraints.maxWidth < 800;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50),
-          child: isMobile
-              ? const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TechnicalSkills(),
-              SizedBox(height: 30),
-              WorkExperience(),
-            ],
-          )
-              : const Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: TechnicalSkills()),
-              SizedBox(width: 20),
-              Expanded(child: WorkExperience()),
-            ],
-          ),
+          child:
+              isMobile
+                  ? const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TechnicalSkills(),
+                      SizedBox(height: 30),
+                      WorkExperience(),
+                    ],
+                  )
+                  : const Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: TechnicalSkills()),
+                      SizedBox(width: 20),
+                      Expanded(child: WorkExperience()),
+                    ],
+                  ),
         );
       },
     );
@@ -351,14 +445,14 @@ class TechnicalSkills extends StatelessWidget {
         SizedBox(height: 12),
         Text(
           '• Languages & Frameworks: Dart, Flutter, Java, Kotlin, Node.js, Express.js\n'
-              '• Architecture & Patterns: MVVM, Clean Architecture, Provider\n'
-              '• Mobile Development: Android (Java/Kotlin), iOS (Flutter)\n'
-              '• APIs & Integrations: REST APIs, Google Maps, Razorpay, CCAvenue, Firebase\n'
-              '• Databases: MySQL, PostgreSQL, SQLite, Room, Sqflite\n'
-              '• Authentication: JWT, OAuth, Firebase Auth\n'
-              '• Tools & Collaboration: Git, GitHub, Bitbucket, Postman, Agile/Scrum\n'
-              '• Deployment: CI/CD, Play Console, App Store Connect\n'
-              '• Cloud & Services: Firebase, AWS, Secure Data Storage, Localization, TTS',
+          '• Architecture & Patterns: MVVM, Clean Architecture, Provider\n'
+          '• Mobile Development: Android (Java/Kotlin), iOS (Flutter)\n'
+          '• APIs & Integrations: REST APIs, Google Maps, Razorpay, CCAvenue, Firebase\n'
+          '• Databases: MySQL, PostgreSQL, SQLite, Room, Sqflite\n'
+          '• Authentication: JWT, OAuth, Firebase Auth\n'
+          '• Tools & Collaboration: Git, GitHub, Bitbucket, Postman, Agile/Scrum\n'
+          '• Deployment: CI/CD, Play Console, App Store Connect\n'
+          '• Cloud & Services: Firebase, AWS, Secure Data Storage, Localization, TTS',
           style: TextStyle(fontSize: 16),
         ),
       ],
@@ -384,7 +478,7 @@ class WorkExperience extends StatelessWidget {
           title: 'Senior Flutter Developer (Knackbe Technologies, Pune)',
           duration: 'MAR 2022 - PRESENT',
           details:
-          '• Designed and built advanced mobile applications for Android & iOS using Flutter.\n'
+              '• Designed and built advanced mobile applications for Android & iOS using Flutter.\n'
               '• Delivered production-ready apps with robustness and optimization.\n'
               '• Integrated Firebase, Google Maps, Razorpay, and CCAvenue.\n'
               '• Mentored 5 developers, reducing app development time by 15%.\n'
@@ -395,7 +489,7 @@ class WorkExperience extends StatelessWidget {
           title: 'Android Developer (Knackbe Technologies, Pune)',
           duration: 'JUL 2020 - MAR 2022',
           details:
-          '• Designed and developed native Android applications.\n'
+              '• Designed and developed native Android applications.\n'
               '• Integrated APIs and Android SDK components.\n'
               '• Collaborated with designers and QA teams.\n'
               '• Optimized performance and responsiveness.',
@@ -405,7 +499,7 @@ class WorkExperience extends StatelessWidget {
           title: 'Android Developer (OmVSab IT Solution)',
           duration: 'DEC 2019 - JUN 2020',
           details:
-          '• Developed Android apps with focus on usability.\n'
+              '• Developed Android apps with focus on usability.\n'
               '• Utilized Java & Kotlin following best practices.\n'
               '• Integrated Room, SQLite, and Shared Preferences.',
         ),
@@ -430,9 +524,15 @@ class _ExperienceItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
         if (duration!.isNotEmpty)
-          Text(duration!, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(
+            duration!,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
         Text(details, style: const TextStyle(fontSize: 16)),
       ],
     );
@@ -459,7 +559,7 @@ class ProjectsSection extends StatelessWidget {
             title: '1. Marathi Vachan (Language Learning App)',
             duration: '',
             details:
-            '• Developed a language learning app for nursery kids to learn Marathi, Hindi, and English through interactive games and quizzes.\n'
+                '• Developed a language learning app for nursery kids to learn Marathi, Hindi, and English through interactive games and quizzes.\n'
                 '• Implemented balloon-popping games and quizzes for engaging language learning.\n'
                 '• Integrated text-to-speech functionality for correct pronunciation and interactive learning.\n'
                 '• Designed a kid-friendly UI with simple navigation and vibrant visuals.\n'
@@ -470,7 +570,7 @@ class ProjectsSection extends StatelessWidget {
             title: '2. CA Food (Food Ordering App)',
             duration: '',
             details:
-            '• Developed a cross-platform food ordering app for Android and iOS using Flutter.\n'
+                '• Developed a cross-platform food ordering app for Android and iOS using Flutter.\n'
                 '• Enabled real-time order tracking with Google Maps and integrated Razorpay for secure payments.\n'
                 '• Ensured consistent user experience across both platforms.\n'
                 '• Technical Skills: Flutter, Provider, Google Map, Firebase.',
@@ -480,7 +580,7 @@ class ProjectsSection extends StatelessWidget {
             title: '3. Entie (Business Networking App)',
             duration: '',
             details:
-            '• Spearheaded the development of a business networking app connecting Startups, Co-founders and Investors to create opportunities and foster business growth.\n'
+                '• Spearheaded the development of a business networking app connecting Startups, Co-founders and Investors to create opportunities and foster business growth.\n'
                 '• Implemented a real-time chat feature using Firebase Real-time Database.\n'
                 '• Integrated Razorpay for secure payment processing.\n'
                 '• Technical Skills: Android, Firebase.',
@@ -490,7 +590,7 @@ class ProjectsSection extends StatelessWidget {
             title: '4. Flourpicker (E-Commerce App)',
             duration: '',
             details:
-            '• Developed an e-commerce platform for ordering fresh flour with custom mixes.\n'
+                '• Developed an e-commerce platform for ordering fresh flour with custom mixes.\n'
                 '• Integrated Swagger, Firebase, and Razorpay.\n'
                 '• Technical Skills: Android, Firebase, Google Map.',
           ),
