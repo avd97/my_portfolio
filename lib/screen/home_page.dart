@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:my_portfolio/core/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,19 +28,23 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _fetchUserName();
+    _listenToUserDetails();
   }
 
   /// 🔹 Fetch user name from Firebase Realtime Database
-  Future<void> _fetchUserName() async {
-    try {
-      final ref = FirebaseDatabase.instance
-          .ref(Constants.userDetails)
-          .child('admin_info');
-      final snapshot = await ref.get();
+  StreamSubscription? _userSubscription;
+
+  void _listenToUserDetails() {
+    final ref = FirebaseDatabase.instance
+        .ref(Constants.userDetails)
+        .child('admin_info');
+
+    _userSubscription = ref.onValue.listen((DatabaseEvent event) {
+      final snapshot = event.snapshot;
 
       if (snapshot.exists) {
         final data = snapshot.value as Map<dynamic, dynamic>;
+
         setState(() {
           userName = data['name'] ?? 'Unknown User';
           mobileNumber = data['mobileNumber'] ?? '';
@@ -49,13 +57,14 @@ class _HomePageState extends State<HomePage> {
           userName = 'No Name Found';
         });
       }
-    } catch (e, s) {
-      debugPrint('Error fetching name: $e\n$s');
+    }, onError: (error) {
+      debugPrint('Error listening to user details: $error');
       setState(() {
         userName = 'Error Loading Name';
       });
-    }
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -138,9 +147,14 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _userSubscription?.cancel();
+    super.dispose();
+  }
 }
 
-/// HEADER BAR
 /// HEADER BAR
 class HeaderBar extends StatelessWidget {
   final Function(String section) onNavItemTap; // 👈 Accept callback
@@ -321,8 +335,21 @@ class ContactRow extends StatelessWidget {
     required this.profilePic,
     required this.bgImage,});
 
+  Future<void> openUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $url';
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    final linkedInUrl = 'https://www.linkedin.com/in/abhishek-deshpande-7b86b1114';
+    final mobileUrl = 'tel:+997562272';
+    final mailUrl = 'mailto:abhi.pande215@gmail.com';
+
     return LayoutBuilder(
       builder: (context, constraints) {
         bool isMobile = constraints.maxWidth < 800;
@@ -337,30 +364,48 @@ class ContactRow extends StatelessWidget {
                         icon: Icons.call,
                         label: mobileNumber,
                         alignStart: true,
+                        onTap: () async {
+                          openUrl(mobileUrl);
+                        },
                       ),
                       _ContactButton(
                         icon: Icons.mail,
                         label: emailId,
                         alignStart: true,
+                        onTap: () async {
+                          openUrl(mailUrl);
+                        },
                       ),
                       _ContactButton(
                         icon: Icons.insert_link_rounded,
                         label: 'LinkedIn',
                         alignStart: true,
+                        onTap: () async {
+                          openUrl(linkedInUrl);
+                        },
                       ),
                     ],
                   )
                   : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _ContactButton(icon: Icons.call, label: mobileNumber),
+                      _ContactButton(icon: Icons.call, label: mobileNumber,
+                        onTap: () async {
+                          openUrl(mobileUrl);
+                        },),
                       _ContactButton(
                         icon: Icons.mail,
                         label: emailId,
+                        onTap: () async {
+                          openUrl(mailUrl);
+                        },
                       ),
                       _ContactButton(
                         icon: Icons.insert_link_rounded,
                         label: 'LinkedIn',
+                        onTap: () async {
+                          openUrl(linkedInUrl);
+                        },
                       ),
                     ],
                   ),
@@ -374,11 +419,13 @@ class _ContactButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool alignStart;
+  final VoidCallback? onTap;
 
   const _ContactButton({
     required this.icon,
     required this.label,
     this.alignStart = false,
+    this.onTap
   });
 
   @override
@@ -386,7 +433,7 @@ class _ContactButton extends StatelessWidget {
     return Align(
       alignment: alignStart ? Alignment.centerLeft : Alignment.center,
       child: TextButton.icon(
-        onPressed: () {},
+        onPressed: onTap,
         icon: Icon(icon, size: 22),
         label: Text(label, style: const TextStyle(fontSize: 18)),
       ),
