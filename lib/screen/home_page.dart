@@ -347,8 +347,8 @@ class ContactRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final linkedInUrl = 'https://www.linkedin.com/in/abhishek-deshpande-7b86b1114';
-    final mobileUrl = 'tel:+997562272';
-    final mailUrl = 'mailto:abhi.pande215@gmail.com';
+    final mobileUrl = 'tel:+$mobileNumber';
+    final mailUrl = 'mailto:$emailId';
 
     return LayoutBuilder(
       builder: (context, constraints) {
