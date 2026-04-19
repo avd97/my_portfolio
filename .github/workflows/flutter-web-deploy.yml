@@ -19,7 +19,8 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3' # match your Flutter SDK version
+#          flutter-version: '3.29.3' # match your Flutter SDK version
+          channel: 'stable' # or 'beta', 'dev', 'master' as needed
 
       - name: Install dependencies
         run: flutter pub get
