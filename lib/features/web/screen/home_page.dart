@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:my_portfolio/core/constants.dart';
@@ -320,7 +321,7 @@ class ProfileSection extends StatelessWidget {
       builder: (context, constraints) {
         // Responsive size logic
         final bool isMobile = constraints.maxWidth < 800;
-        final double bannerHeight = isMobile ? 200 : 300;
+        final double bannerHeight = isMobile ? 200 : 250;
         final double avatarRadius = isMobile ? 70 : 100;
 
         return Column(
@@ -335,11 +336,34 @@ class ProfileSection extends StatelessWidget {
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16),
                   ),
-                  child: Image.network(
-                    bgImage,
-                    fit: BoxFit.cover,
+                  child: CachedNetworkImage(
+                    imageUrl: bgImage,
                     width: double.infinity,
                     height: bannerHeight,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.indigo.shade200,
+                          ),
+                        ),
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+                      return Center(
+                        child: Text(
+                          'Error loading banner image: $error',
+                          style: TextStyle(color: Colors.red.shade400),
+                        ),
+                      );
+                    },
+                    // child: Image.network(
+                    //   bgImage,
+                    //   fit: BoxFit.cover,
+                    //   width: double.infinity,
+                    //   height: bannerHeight,
+                    // ),
                   ),
                 ),
 
@@ -863,7 +887,8 @@ class ServicesSection extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 30),
-              Center(
+              Align(
+                alignment: AlignmentGeometry.centerEnd,
                 child: ElevatedButton.icon(
                   onPressed: () => _showServicesDialog(context),
                   icon: const Icon(Icons.contact_mail),
@@ -1132,37 +1157,36 @@ $name
 *          SERVICE REQUEST INQUIRY*
 *═══════════════════════════════════════════*
 
-Hi Admin,
-
+Hi Abhishek,\n
 I wanted to reach out regarding a service request. Please find the details below.
 
 *───────────────────────────────────────────*
 *CLIENT INFORMATION*
 *───────────────────────────────────────────*
 
-*Name:* $name
+*Name:* $name\n
 *Date:* ${DateTime.now().toString().split('.')[0]}
 
 *───────────────────────────────────────────*
 *PROJECT DETAILS*
 *───────────────────────────────────────────*
 
-*Project Description:* $project
-*Budget/Costing:* $costing
-*Expected Deadline:* $deadline
+*Project Description:* $project\n
+*Budget/Costing:* $costing\n
+*Expected Deadline:* $deadline\n
 
 *───────────────────────────────────────────*
 *REQUESTED SERVICES*
 *───────────────────────────────────────────*
 
-$servicesText
+$servicesText\n
 
 *───────────────────────────────────────────*
 
-Thanks for considering this request. Looking forward to hearing from you!
+Thanks for considering this request. Looking forward to hearing from you!\n
 
-*Best regards,*
-*$name*
+Best regards,\n
+$name
 
 *═══════════════════════════════════════════*
 ''';
