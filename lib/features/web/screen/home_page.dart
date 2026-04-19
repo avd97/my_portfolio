@@ -1241,7 +1241,7 @@ $name
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 16),
-              Flexible(
+              Expanded(
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: servicesList.length,
@@ -1251,20 +1251,18 @@ $name
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CheckboxListTile(
-                          title: Flexible(
-                            child: Row(
-                              children: [
-                                Icon(service.icon, size: 20, color: Colors.blue),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    service.title,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                  ),
+                          title: Row(
+                            children: [
+                              Icon(service.icon, size: 20, color: Colors.blue),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  service.title,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                           value: selectedServices.contains(service.title),
                           onChanged: (bool? value) => _toggleService(service.title),
@@ -1411,15 +1409,14 @@ $name
                     child: const Text('Back'),
                   ),
                   const SizedBox(width: 12),
-                  OutlinedButton.icon(
+                  IconButton(
                     onPressed: _sendViaWhatsApp,
-                    icon: const Icon(Icons.message),
-                    label: const Text('WhatsApp'),
+                    icon: const Icon(Icons.call),
                   ),
                   const SizedBox(width: 12),
                   ElevatedButton(
                     onPressed: _sendRequest,
-                    child: const Text('Send via Mail'),
+                    child: const Icon(Icons.mail),
                   ),
                 ],
               ),
