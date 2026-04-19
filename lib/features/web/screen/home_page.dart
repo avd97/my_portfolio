@@ -1213,7 +1213,7 @@ $name
         constraints: const BoxConstraints(maxWidth: 500, maxHeight: 700),
         padding: const EdgeInsets.all(20),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          // mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -1308,7 +1308,8 @@ $name
                   ),
                 ],
               ),
-            ] else ...[
+            ]
+            else ...[
               const Text(
                 'Please provide your project details:',
                 style: TextStyle(fontSize: 16),
