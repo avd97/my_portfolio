@@ -1102,7 +1102,7 @@ $name
 
     final emailUri = Uri(
       scheme: 'mailto',
-      path: 'abhishekdeshpande.dev@gmail.com',
+      path: 'abhi.pande215@gmail.com',
       queryParameters: {'subject': subject, 'body': body},
     );
 
@@ -1309,119 +1309,127 @@ $name
                 ],
               ),
             ]
-            else ...[
-              const Text(
-                'Please provide your project details:',
-                style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 16),
-              // Display selected services
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  border: Border.all(color: Colors.blue.shade300),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Selected Services:',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+            else
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Please provide your project details:',
+                        style: TextStyle(fontSize: 16),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _buildSelectedServicesText(),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.black87,
-                        height: 1.5,
+                      const SizedBox(height: 16),
+                      // Display selected services
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          border: Border.all(color: Colors.blue.shade300),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Selected Services:',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _buildSelectedServicesText(),
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.black87,
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Your Name',
-                  border: OutlineInputBorder(),
-                  errorText: _isFormSubmitted && nameController.text.trim().isEmpty
-                      ? 'Name is required'
-                      : null,
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: projectController,
-                decoration: InputDecoration(
-                  labelText: 'Project Description',
-                  border: OutlineInputBorder(),
-                  errorText: _isFormSubmitted && projectController.text.trim().isEmpty
-                      ? 'Project description is required'
-                      : null,
-                ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: costingController,
-                decoration: const InputDecoration(
-                  labelText: 'Budget/Costing (Optional)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: deadlineController,
-                decoration: const InputDecoration(
-                  labelText: 'Deadline (Optional)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (isOthersSelected)
-                TextField(
-                  controller: otherServiceController,
-                  decoration: InputDecoration(
-                    labelText: 'Custom Service Name',
-                    border: OutlineInputBorder(),
-                    errorText: _otherServiceError,
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Your Name',
+                          border: OutlineInputBorder(),
+                          errorText: _isFormSubmitted && nameController.text.trim().isEmpty
+                              ? 'Name is required'
+                              : null,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: projectController,
+                        decoration: InputDecoration(
+                          labelText: 'Project Description',
+                          border: OutlineInputBorder(),
+                          errorText: _isFormSubmitted && projectController.text.trim().isEmpty
+                              ? 'Project description is required'
+                              : null,
+                        ),
+                        maxLines: 3,
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: costingController,
+                        decoration: const InputDecoration(
+                          labelText: 'Budget/Costing (Optional)',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: deadlineController,
+                        decoration: const InputDecoration(
+                          labelText: 'Deadline (Optional)',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      if (isOthersSelected)
+                        TextField(
+                          controller: otherServiceController,
+                          decoration: InputDecoration(
+                            labelText: 'Custom Service Name',
+                            border: OutlineInputBorder(),
+                            errorText: _otherServiceError,
+                          ),
+                        ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                _isFormSubmitted = false;
+                                _otherServiceError = null;
+                              });
+                              setState(() => showForm = false);
+                            },
+                            child: const Text('Back'),
+                          ),
+                          const SizedBox(width: 12),
+                          IconButton(
+                            onPressed: _sendViaWhatsApp,
+                            icon: const Icon(Icons.call),
+                          ),
+                          const SizedBox(width: 12),
+                          ElevatedButton(
+                            onPressed: _sendRequest,
+                            child: const Icon(Icons.mail),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _isFormSubmitted = false;
-                        _otherServiceError = null;
-                      });
-                      setState(() => showForm = false);
-                    },
-                    child: const Text('Back'),
-                  ),
-                  const SizedBox(width: 12),
-                  IconButton(
-                    onPressed: _sendViaWhatsApp,
-                    icon: const Icon(Icons.call),
-                  ),
-                  const SizedBox(width: 12),
-                  ElevatedButton(
-                    onPressed: _sendRequest,
-                    child: const Icon(Icons.mail),
-                  ),
-                ],
               ),
-            ],
           ],
         ),
       ),
