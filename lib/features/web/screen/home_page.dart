@@ -85,6 +85,7 @@ class HomePage extends StatelessWidget {
                         emailId: state.emailId,
                         profilePic: state.profilePic,
                         bgImage: state.bgImage,
+                        isLoading: state.isLoading,
                       ),
                       const SizedBox(height: 20),
                       ContactRow(

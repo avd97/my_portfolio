@@ -170,64 +170,6 @@ void main() {
 
       verify(() => mockServicesBloc.add(any<ResetFormEvent>())).called(greaterThan(0));
     });
-
-    closeButtonResetsSelectionsAndClosesDialog() {
-      testWidgets('close button in header resets all selections', (WidgetTester tester) async {
-        final initialState = const ServicesState(
-          showForm: false,
-          selectedServices: {'Mobile App Development', 'Web Development'},
-        );
-        mockServicesBloc.setState(initialState);
-        when(() => mockServicesBloc.add(any())).thenReturn(null);
-
-        await tester.pumpWidget(createTestWidget(initialState: initialState));
-        await tester.pumpAndSettle();
-
-        final closeButton = find.byIcon(Icons.close);
-        await tester.tap(closeButton);
-        await tester.pumpAndSettle();
-
-        verify(() => mockServicesBloc.add(any<ResetFormEvent>())).called(greaterThan(0));
-      });
-    }
-
-    serviceSelectionResetsOnMultipleCycles() {
-      testWidgets('selecting and deselecting same service multiple times maintains consistency', (WidgetTester tester) async {
-        var currentServices = <String>{};
-
-        final initialState = const ServicesState(
-          showForm: false,
-          selectedServices: {},
-        );
-        mockServicesBloc.setState(initialState);
-
-        when(() => mockServicesBloc.add(any<ToggleServiceEvent>())).thenAnswer((_) {
-          final service = 'Mobile App Development';
-          if (currentServices.contains(service)) {
-            currentServices.remove(service);
-          } else {
-            currentServices.add(service);
-          }
-          mockServicesBloc.setState(
-            initialState.copyWith(selectedServices: currentServices),
-          );
-        });
-
-        await tester.pumpWidget(createTestWidget(initialState: initialState));
-        await tester.pumpAndSettle();
-
-        final checkboxes = find.byType(CheckboxListTile);
-        if (checkboxes.evaluate().isNotEmpty) {
-          await tester.tap(checkboxes.first);
-          await tester.pumpAndSettle();
-          expect(currentServices.length, 1);
-
-          await tester.tap(checkboxes.first);
-          await tester.pumpAndSettle();
-          expect(currentServices.length, 0);
-        }
-      });
-    }
   });
 
   group('ServicesDialog - Form Screen', () {
@@ -608,6 +550,10 @@ void main() {
     });
   });
 }
+
+
+
+
 
 
 

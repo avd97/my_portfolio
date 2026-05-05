@@ -7,6 +7,7 @@ class ProfileSection extends StatelessWidget {
   final String emailId;
   final String profilePic;
   final String bgImage;
+  final bool isLoading;
 
   const ProfileSection({
     super.key,
@@ -15,10 +16,21 @@ class ProfileSection extends StatelessWidget {
     required this.emailId,
     required this.profilePic,
     required this.bgImage,
+    required this.isLoading,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Show loading indicator while data is being fetched
+    if (isLoading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(50.0),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         // Responsive size logic
@@ -38,29 +50,65 @@ class ProfileSection extends StatelessWidget {
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16),
                   ),
-                  child: CachedNetworkImage(
-                    imageUrl: bgImage,
-                    width: double.infinity,
-                    height: bannerHeight,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.indigo.shade200,
+                  child: bgImage.isNotEmpty && bgImage != 'Loading...'
+                      ? CachedNetworkImage(
+                          imageUrl: bgImage,
+                          width: double.infinity,
+                          height: bannerHeight,
+                          fit: BoxFit.cover,
+                          cacheManager: null,
+                          placeholder: (context, url) => Container(
+                            width: double.infinity,
+                            height: bannerHeight,
+                            color: Colors.teal.shade100,
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) {
+                            debugPrint('Background image error: $error for URL: $url');
+                            return Container(
+                              width: double.infinity,
+                              height: bannerHeight,
+                              color: Colors.teal.shade100,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.image,
+                                    size: 50,
+                                    color: Colors.teal,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Banner image unavailable',
+                                    style: TextStyle(color: Colors.teal.shade600),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        )
+                      : Container(
+                          width: double.infinity,
+                          height: bannerHeight,
+                          color: Colors.teal.shade100,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.image,
+                                size: 50,
+                                color: Colors.teal,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'No banner image',
+                                style: TextStyle(color: Colors.teal.shade600),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
-                    errorWidget: (context, url, error) {
-                      return Center(
-                        child: Text(
-                          'Error loading banner image: $error',
-                          style: TextStyle(color: Colors.red.shade400),
-                        ),
-                      );
-                    },
-                  ),
                 ),
 
                 // Profile photo overlay
@@ -72,7 +120,32 @@ class ProfileSection extends StatelessWidget {
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
                       radius: avatarRadius,
-                      backgroundImage: NetworkImage(profilePic),
+                      backgroundColor: Colors.grey.shade200,
+                      child: profilePic.isNotEmpty && profilePic != 'Loading...'
+                          ? ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl: profilePic,
+                                fit: BoxFit.cover,
+                                width: avatarRadius * 2,
+                                height: avatarRadius * 2,
+                                placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                                errorWidget: (context, url, error) {
+                                  debugPrint('Profile image error: $error for URL: $url');
+                                  return const Icon(
+                                    Icons.person,
+                                    size: 50,
+                                    color: Colors.grey,
+                                  );
+                                },
+                              ),
+                            )
+                          : const Icon(
+                              Icons.person,
+                              size: 50,
+                              color: Colors.grey,
+                            ),
                     ),
                   ),
                 ),
