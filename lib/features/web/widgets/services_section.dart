@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_portfolio/features/web/bloc/home_page_bloc.dart';
@@ -11,12 +13,47 @@ class ServicesSection extends StatelessWidget {
   void _showServicesDialog(BuildContext context) {
     final servicesBloc = context.read<ServicesBloc>();
     final phoneNumber = context.read<HomePageBloc>().state.mobileNumber;
-    showDialog(
+
+    showGeneralDialog(
       context: context,
-      builder: (BuildContext context) {
+      barrierDismissible: true,
+      barrierLabel: "Services Dialog",
+      barrierColor: Colors.white.withOpacity(0.2), // light white overlay
+      transitionDuration: const Duration(milliseconds: 400),
+
+      pageBuilder: (context, animation, secondaryAnimation) {
         return BlocProvider.value(
           value: servicesBloc,
           child: ServicesDialog(adminPhoneNumber: phoneNumber),
+        );
+      },
+
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return Stack(
+          children: [
+            // 🔹 Blur background
+            BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 6,
+                sigmaY: 6,
+              ),
+              child: Container(
+                color: Color(0xFF6C6C6C).withOpacity(0.1),
+              ),
+            ),
+
+            // 🔹 Animated dialog
+            FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutBack,
+                ),
+                child: child,
+              ),
+            ),
+          ],
         );
       },
     );

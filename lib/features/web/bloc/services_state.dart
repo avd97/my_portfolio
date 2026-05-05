@@ -6,6 +6,11 @@ class ServicesState extends Equatable {
   final bool isOthersSelected;
   final String otherServiceName;
   final String? otherServiceError;
+
+  // ✅ ADD THESE
+  final String? nameError;
+  final String? projectError;
+
   final bool isSubmitting;
   final String? errorMessage;
   final bool requestSent;
@@ -16,6 +21,10 @@ class ServicesState extends Equatable {
     this.isOthersSelected = false,
     this.otherServiceName = '',
     this.otherServiceError,
+
+    this.nameError,        // ✅ NEW
+    this.projectError,     // ✅ NEW
+
     this.isSubmitting = false,
     this.errorMessage,
     this.requestSent = false,
@@ -27,6 +36,10 @@ class ServicesState extends Equatable {
     bool? isOthersSelected,
     String? otherServiceName,
     String? otherServiceError,
+
+    String? nameError,        // ✅ NEW
+    String? projectError,     // ✅ NEW
+
     bool? isSubmitting,
     String? errorMessage,
     bool? requestSent,
@@ -37,6 +50,10 @@ class ServicesState extends Equatable {
       isOthersSelected: isOthersSelected ?? this.isOthersSelected,
       otherServiceName: otherServiceName ?? this.otherServiceName,
       otherServiceError: otherServiceError ?? this.otherServiceError,
+
+      nameError: nameError,
+      projectError: projectError,
+
       isSubmitting: isSubmitting ?? this.isSubmitting,
       errorMessage: errorMessage ?? this.errorMessage,
       requestSent: requestSent ?? this.requestSent,
@@ -50,6 +67,8 @@ class ServicesState extends Equatable {
     isOthersSelected,
     otherServiceName,
     otherServiceError,
+    nameError,        // ✅ NEW
+    projectError,     // ✅ NEW
     isSubmitting,
     errorMessage,
     requestSent,

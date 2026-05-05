@@ -115,7 +115,17 @@ class _ServicesDialogState extends State<ServicesDialog> {
       },
       builder: (context, state) {
         return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: Colors.white, // ✅ Proper white background
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: Colors.grey.shade300, // ✅ Border color
+              width: 1.2,
+            ),
+          ),
+          shadowColor: Colors.black,
+          elevation: 12,
+          clipBehavior: Clip.antiAlias, // ✅ Important to preserve rounded corners
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
             constraints: const BoxConstraints(maxWidth: 500, maxHeight: 700),
