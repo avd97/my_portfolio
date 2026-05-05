@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_portfolio/features/admin/bloc/admin_bloc.dart';
 import 'package:my_portfolio/features/admin/screen/admin_access_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:my_portfolio/features/web/bloc/home_page_bloc.dart';
+import 'package:my_portfolio/features/web/bloc/services_bloc.dart';
 import 'package:my_portfolio/features/web/screen/home_page.dart';
 import 'firebase_options.dart';
 
@@ -28,11 +30,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Abhishek Deshpande',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       ),
       /// ✅ FIX HERE
       home: kIsWeb
-          ? const HomePage() // load HomePage on web
+          ? MultiBlocProvider(
+              providers: [
+                BlocProvider<HomePageBloc>(
+                  create: (_) => HomePageBloc()..add(const InitializeHomePageEvent()),
+                ),
+                BlocProvider<ServicesBloc>(
+                  create: (_) => ServicesBloc(),
+                ),
+              ],
+              child: const HomePage(),
+            ) // load HomePage on web with providers
           : BlocProvider(
               create: (context) => AdminBloc(),
               child: const AdminAccessScreen(), // load AdminAccessScreen on Android/iOS
