@@ -99,14 +99,35 @@ class ServicesSection extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 30),
-              Align(
-                alignment: AlignmentGeometry.centerEnd,
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF00FF22), // green
+                      Color(0xFF99FF00), // light green
+                      Color(0xFFFFF100), // light green
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: ElevatedButton.icon(
                   onPressed: () => _showServicesDialog(context),
                   icon: const Icon(Icons.contact_mail),
-                  label: const Text('Request Services'),
+                  label: const Text('Request For Services'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent, // ✅ Important
+                    shadowColor: Colors.transparent,     // ✅ Remove default shadow
+                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 24),
+                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight(600)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                 ),
-              ),
+              )
             ],
           ),
         );

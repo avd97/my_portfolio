@@ -55,7 +55,7 @@ class _ServicesDialogState extends State<ServicesDialog> {
         finalServicesList.add(otherServiceName);
       }
     }
-    return '• ${finalServicesList.join('\n• ')}';
+    return '✅ ${finalServicesList.join('\n✅ ')}';
   }
 
   void _sendRequest() {
@@ -240,9 +240,10 @@ class _ServicesDialogState extends State<ServicesDialog> {
                           const SizedBox(height: 16),
                           // Display selected services
                           Container(
+                            width: double.infinity,
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
+                              color: Color(0xffeefbff),
                               border: Border.all(color: Colors.blue.shade300),
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -258,16 +259,19 @@ class _ServicesDialogState extends State<ServicesDialog> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Text(
-                                  _buildSelectedServicesText(
-                                    state.selectedServices,
-                                    state.isOthersSelected,
-                                    state.otherServiceName,
-                                  ),
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.black87,
-                                    height: 1.5,
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 0.0),
+                                  child: Text(
+                                    _buildSelectedServicesText(
+                                      state.selectedServices,
+                                      state.isOthersSelected,
+                                      state.otherServiceName,
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.black87,
+                                      height: 1.5,
+                                    ),
                                   ),
                                 ),
                               ],
