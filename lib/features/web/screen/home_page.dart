@@ -77,6 +77,7 @@ class HomePage extends StatelessWidget {
                       : EdgeInsets.zero,
                   child: ListView(
                     controller: scrollController,
+
                     children: [
                       const SizedBox(height: 16),
                       ProfileSection(

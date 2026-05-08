@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_portfolio/core/theme_toggle_button.dart';
 
 class HeaderBar extends StatelessWidget {
   final Function(String section) onNavItemTap;
@@ -10,7 +11,7 @@ class HeaderBar extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
     return Container(
       padding: const EdgeInsets.all(12),
-      color: Colors.grey.shade400,
+      color: Theme.of(context).colorScheme.surface,
       width: screenSize.width,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -26,6 +27,8 @@ class HeaderBar extends StatelessWidget {
             _HeaderItem(title: 'Projects', onTap: () => onNavItemTap('Projects')),
             _HeaderItem(title: 'Contact', onTap: () => onNavItemTap('Contact')),
             _HeaderItem(title: 'Services', onTap: () => onNavItemTap('Services')),
+            // Add a toggle button widget for dark mode
+            const ThemeToggleButton(),
           ],
         ),
       ),
@@ -45,10 +48,10 @@ class _HeaderItem extends StatelessWidget {
       onTap: onTap,
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.black87,
+          color: Theme.of(context).textTheme.bodyLarge?.color,
         ),
       ),
     );

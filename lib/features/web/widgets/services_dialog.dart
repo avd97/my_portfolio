@@ -115,7 +115,8 @@ class _ServicesDialogState extends State<ServicesDialog> {
       },
       builder: (context, state) {
         return Dialog(
-          backgroundColor: Colors.white, // ✅ Proper white background
+          backgroundColor: Theme.of(context).dialogTheme.backgroundColor ??
+    Theme.of(context).colorScheme.surface, // ✅ Proper white background
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
             side: BorderSide(
@@ -135,7 +136,7 @@ class _ServicesDialogState extends State<ServicesDialog> {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.build, color: Colors.blue),
+                    Icon(Icons.build, color: Theme.of(context).colorScheme.primary),
                     const SizedBox(width: 8),
                     Text(
                       state.showForm ? 'Project Requirements' : 'Select Services',
@@ -170,7 +171,7 @@ class _ServicesDialogState extends State<ServicesDialog> {
                             CheckboxListTile(
                               title: Row(
                                 children: [
-                                  Icon(service.icon, size: 20, color: Colors.blue),
+                                  Icon(service.icon, size: 20, color: Theme.of(context).colorScheme.primary),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
@@ -244,18 +245,18 @@ class _ServicesDialogState extends State<ServicesDialog> {
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: Color(0xffeefbff),
-                              border: Border.all(color: Colors.blue.shade300),
+                              border: Border.all(color: Theme.of(context).colorScheme.primary),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Selected Services:',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                                    color: Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -267,9 +268,9 @@ class _ServicesDialogState extends State<ServicesDialog> {
                                       state.isOthersSelected,
                                       state.otherServiceName,
                                     ),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 13,
-                                      color: Colors.black87,
+                                      color: Theme.of(context).textTheme.bodyLarge?.color,
                                       height: 1.5,
                                     ),
                                   ),

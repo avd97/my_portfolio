@@ -39,15 +39,19 @@ class TechnicalSkills extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Technical Skills',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
+          ),
         ),
-        Divider(),
-        SizedBox(height: 12),
+        const Divider(),
+        const SizedBox(height: 12),
         Text(
           '• Languages & Frameworks: Dart, Flutter, Java, Kotlin, Node.js, Express.js\n'
           '• Architecture & Patterns: MVVM, Clean Architecture, Provider\n'
@@ -58,7 +62,7 @@ class TechnicalSkills extends StatelessWidget {
           '• Tools & Collaboration: Git, GitHub, Bitbucket, Postman, Agile/Scrum\n'
           '• Deployment: CI/CD, Play Console, App Store Connect\n'
           '• Cloud & Services: Firebase, AWS, Secure Data Storage, Localization, TTS',
-          style: TextStyle(fontSize: 15, height: 1.8, color: Colors.black87),
+          style: TextStyle(fontSize: 15, height: 1.8, color: Theme.of(context).textTheme.bodyLarge?.color,),
         ),
       ],
     );
@@ -154,10 +158,10 @@ class _ExperienceItem extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           details,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             height: 1.6,
-            color: Colors.black87,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
       ],

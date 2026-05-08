@@ -70,15 +70,16 @@ class ServicesSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Services',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,),
               ),
               const Divider(),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'I offer a comprehensive range of mobile app development and software solutions to help bring your ideas to life. Here are the services I provide:',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.bodyLarge?.color,),
               ),
               const SizedBox(height: 20),
               GridView.builder(
@@ -99,31 +100,33 @@ class ServicesSection extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 30),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF00FF22), // green
-                      Color(0xFF99FF00), // light green
-                      Color(0xFFFFF100), // light green
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              Center(
+                child: Container(
+                  // width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF00FF22), // green
+                        Color(0xFF99FF00), // light green
+                        Color(0xFFFFF100), // light green
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ElevatedButton.icon(
-                  onPressed: () => _showServicesDialog(context),
-                  icon: const Icon(Icons.contact_mail),
-                  label: const Text('Request For Services'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent, // ✅ Important
-                    shadowColor: Colors.transparent,     // ✅ Remove default shadow
-                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 24),
-                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight(600)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  child: ElevatedButton.icon(
+                    onPressed: () => _showServicesDialog(context),
+                    icon: const Icon(Icons.contact_mail),
+                    label: const Text('Request For Services'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent, // ✅ Important
+                      shadowColor: Colors.transparent,     // ✅ Remove default shadow
+                      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 24),
+                      textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight(600), color: Theme.of(context).textTheme.bodyLarge?.color,),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
@@ -147,9 +150,12 @@ class _ServiceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.indigo.shade200, width: 1.5),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline,
+          width: 1.5,
+        ),
         borderRadius: BorderRadius.circular(12),
-        color: Colors.indigo.shade50,
+        color: Theme.of(context).colorScheme.secondary,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -159,10 +165,10 @@ class _ServiceCard extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               service.title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
             const SizedBox(height: 8),
@@ -170,7 +176,7 @@ class _ServiceCard extends StatelessWidget {
               service.description,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey[700],
+                color: Theme.of(context).textTheme.bodyLarge?.color,
                 height: 1.5,
               ),
             ),

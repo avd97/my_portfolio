@@ -13,12 +13,12 @@ class ProjectsSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Projects',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                 ),
               ),
               const Divider(),
@@ -97,10 +97,10 @@ class _ProjectCard extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 details,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   height: 1.6,
-                  color: Colors.black87,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                 ),
               ),
             ],
