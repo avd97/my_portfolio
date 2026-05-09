@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_portfolio/core/theme/custom_colors.dart';
 
 class AppTheme {
 
@@ -11,6 +12,11 @@ class AppTheme {
   static const Color lightBorder = Color(0xFFE0E0E0);
   static const Color lightServiceCardBorder = Color(0xffffa08a);
   static const Color lightServiceCardBg = Color(0xffffe8e2);
+  static const List<Color> lightServiceButtonGradient = [
+    Color(0xFF00FF22),
+    Color(0xFF99FF00),
+    Color(0xFFFFF100),
+  ];
 
   // ================= DARK COLORS =================
 
@@ -21,6 +27,11 @@ class AppTheme {
   static const Color darkBorder = Color(0xFF2C2C2C);
   static const Color darkServiceCardBorder = Color(0xFFB86A5A);
   static const Color darkServiceCardBg = Color(0xFF2A1F1C);
+  static const List<Color> darkServiceButtonGradient = [
+    Color(0xFF006D14),
+    Color(0xFF3E7A00),
+    Color(0xFF8A7A00),
+  ];
 
   // ================= COMMON =================
 
@@ -59,7 +70,7 @@ class AppTheme {
     // ================= DIALOG =================
 
     dialogTheme: DialogThemeData(
-      backgroundColor: Colors.white,
+      backgroundColor: lightCard,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -136,6 +147,21 @@ class AppTheme {
     ),
 
     dividerColor: lightBorder,
+
+    extensions: const [
+      CustomColors(
+        serviceCardBg: Color(0xffffe8e2),
+        serviceCardBorder: Color(0xffffa08a),
+
+        selectedServiceBg: Color(0xffeefbff),
+
+        serviceButtonGradient: [
+          Color(0xFF00FF22),
+          Color(0xFF99FF00),
+          Color(0xFFFFF100),
+        ],
+      ),
+    ],
   );
 
   // =========================================================
@@ -169,7 +195,7 @@ class AppTheme {
     // ================= DIALOG =================
 
     dialogTheme: DialogThemeData(
-      backgroundColor: Colors.white,
+      backgroundColor: darkCard,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -246,5 +272,20 @@ class AppTheme {
     ),
 
     dividerColor: darkBorder,
+
+    extensions: const [
+      CustomColors(
+        serviceCardBg: Color(0xFF2A1F1C),
+        serviceCardBorder: Color(0xFFB86A5A),
+
+        selectedServiceBg: Color(0xFF1E2A30),
+
+        serviceButtonGradient: [
+          Color(0xFF006D14),
+          Color(0xFF3E7A00),
+          Color(0xFF8A7A00),
+        ],
+      ),
+    ],
   );
 }

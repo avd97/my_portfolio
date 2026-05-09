@@ -115,22 +115,32 @@ class _ServicesDialogState extends State<ServicesDialog> {
       },
       builder: (context, state) {
         return Dialog(
-          backgroundColor: Theme.of(context).dialogTheme.backgroundColor ??
-    Theme.of(context).colorScheme.surface, // ✅ Proper white background
+          backgroundColor: Colors.transparent,
+          elevation: 12,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
             side: BorderSide(
-              color: Colors.grey.shade300, // ✅ Border color
+              color: Theme.of(context).dividerColor,
               width: 1.2,
             ),
           ),
           shadowColor: Colors.black,
-          elevation: 12,
-          clipBehavior: Clip.antiAlias, // ✅ Important to preserve rounded corners
+          clipBehavior: Clip.antiAlias,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            constraints: const BoxConstraints(maxWidth: 500, maxHeight: 700),
+            constraints: const BoxConstraints(
+              maxWidth: 500,
+              maxHeight: 700,
+            ),
+
             padding: const EdgeInsets.all(20),
+
+            decoration: BoxDecoration(
+              color: Theme.of(context).dialogTheme.backgroundColor ??
+                  Theme.of(context).colorScheme.surface,
+
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -244,7 +254,9 @@ class _ServicesDialogState extends State<ServicesDialog> {
                             width: double.infinity,
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Color(0xffeefbff),
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? const Color(0xFF1E2A30)
+                                  : const Color(0xffeefbff),
                               border: Border.all(color: Theme.of(context).colorScheme.primary),
                               borderRadius: BorderRadius.circular(8),
                             ),
