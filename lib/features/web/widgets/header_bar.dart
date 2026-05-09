@@ -13,24 +13,22 @@ class HeaderBar extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       color: Theme.of(context).colorScheme.surface,
       width: screenSize.width,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          spacing: 18,
-          children: [
-            _HeaderItem(title: 'Home', onTap: () => onNavItemTap('Home')),
-            _HeaderItem(
-              title: 'Experience',
-              onTap: () => onNavItemTap('Experience'),
-            ),
-            _HeaderItem(title: 'Projects', onTap: () => onNavItemTap('Projects')),
-            _HeaderItem(title: 'Contact', onTap: () => onNavItemTap('Contact')),
-            _HeaderItem(title: 'Services', onTap: () => onNavItemTap('Services')),
-            // Add a toggle button widget for dark mode
-            const ThemeToggleButton(),
-          ],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        spacing: 18,
+        children: [
+          _HeaderItem(title: 'Home', onTap: () => onNavItemTap('Home')),
+          _HeaderItem(
+            title: 'Experience',
+            onTap: () => onNavItemTap('Experience'),
+          ),
+          _HeaderItem(title: 'Projects', onTap: () => onNavItemTap('Projects')),
+          _HeaderItem(title: 'Contact', onTap: () => onNavItemTap('Contact')),
+          _HeaderItem(title: 'Services', onTap: () => onNavItemTap('Services')),
+          // Add a toggle button widget for dark mode
+          Spacer(),
+          const ThemeToggleButton(),
+        ],
       ),
     );
   }

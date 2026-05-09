@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_portfolio/core/constants.dart';
 import 'package:my_portfolio/features/web/bloc/services_bloc.dart';
 import 'package:my_portfolio/features/web/models/service_item.dart';
 
@@ -64,13 +65,21 @@ class _ServicesDialogState extends State<ServicesDialog> {
     final costing = costingController.text.trim();
     final deadline = deadlineController.text.trim();
 
-    context.read<ServicesBloc>().add(SendRequestViaEmailEvent(
-      name: name,
-      project: project,
-      costing: costing,
-      deadline: deadline,
-    ));
-    context.read<ServicesBloc>().add(const ResetFormEvent());
+    if(name.isEmpty) {
+      Constants.showToast(message: 'Please enter your name', type: ToastType.error);
+      return;
+    }else if(project.isEmpty) {
+      Constants.showToast(message: 'Please enter about project', type: ToastType.error);
+      return;
+    } else {
+      context.read<ServicesBloc>().add(SendRequestViaEmailEvent(
+        name: name,
+        project: project,
+        costing: costing,
+        deadline: deadline,
+      ));
+      context.read<ServicesBloc>().add(const ResetFormEvent());
+    }
   }
 
   void _sendViaWhatsApp() {
@@ -86,15 +95,22 @@ class _ServicesDialogState extends State<ServicesDialog> {
       );
       return;
     }
-
-    context.read<ServicesBloc>().add(SendRequestViaWhatsAppEvent(
-      name: name,
-      project: project,
-      costing: costing,
-      deadline: deadline,
-      phoneNumber: phoneNumber,
-    ));
-    context.read<ServicesBloc>().add(const ResetFormEvent());
+    else if(name.isEmpty) {
+      Constants.showToast(message: 'Please enter your name', type: ToastType.error);
+      return;
+    }else if(project.isEmpty) {
+      Constants.showToast(message: 'Please enter about project', type: ToastType.error);
+      return;
+    } else {
+      context.read<ServicesBloc>().add(SendRequestViaWhatsAppEvent(
+        name: name,
+        project: project,
+        costing: costing,
+        deadline: deadline,
+        phoneNumber: phoneNumber,
+      ));
+      context.read<ServicesBloc>().add(const ResetFormEvent());
+    }
   }
 
   @override
@@ -146,16 +162,29 @@ class _ServicesDialogState extends State<ServicesDialog> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.build, color: Theme.of(context).colorScheme.primary),
+                    Icon(
+                      Icons.build,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+
                     const SizedBox(width: 8),
-                    Text(
-                      state.showForm ? 'Project Requirements' : 'Select Services',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+
+                    Expanded(
+                      child: Text(
+                        state.showForm
+                            ? 'Project Requirements'
+                            : 'Select Services',
+
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    const Spacer(),
+
                     IconButton(
                       onPressed: _closeDialog,
                       icon: const Icon(Icons.close),

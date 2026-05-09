@@ -65,6 +65,8 @@ class AppTheme {
       backgroundColor: lightBackground,
       foregroundColor: lightText,
       elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
     ),
 
     // ================= DIALOG =================
@@ -190,6 +192,8 @@ class AppTheme {
       backgroundColor: darkBackground,
       foregroundColor: darkText,
       elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
     ),
 
     // ================= DIALOG =================
