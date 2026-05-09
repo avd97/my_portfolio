@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_portfolio/core/constants.dart';
 import 'package:my_portfolio/features/web/bloc/services_bloc.dart';
 import 'package:my_portfolio/features/web/models/service_item.dart';
 
@@ -64,13 +65,21 @@ class _ServicesDialogState extends State<ServicesDialog> {
     final costing = costingController.text.trim();
     final deadline = deadlineController.text.trim();
 
-    context.read<ServicesBloc>().add(SendRequestViaEmailEvent(
-      name: name,
-      project: project,
-      costing: costing,
-      deadline: deadline,
-    ));
-    context.read<ServicesBloc>().add(const ResetFormEvent());
+    if(name.isEmpty) {
+      Constants.showToast(message: 'Please enter your name', type: ToastType.error);
+      return;
+    }else if(project.isEmpty) {
+      Constants.showToast(message: 'Please enter about project', type: ToastType.error);
+      return;
+    } else {
+      context.read<ServicesBloc>().add(SendRequestViaEmailEvent(
+        name: name,
+        project: project,
+        costing: costing,
+        deadline: deadline,
+      ));
+      context.read<ServicesBloc>().add(const ResetFormEvent());
+    }
   }
 
   void _sendViaWhatsApp() {
@@ -86,15 +95,22 @@ class _ServicesDialogState extends State<ServicesDialog> {
       );
       return;
     }
-
-    context.read<ServicesBloc>().add(SendRequestViaWhatsAppEvent(
-      name: name,
-      project: project,
-      costing: costing,
-      deadline: deadline,
-      phoneNumber: phoneNumber,
-    ));
-    context.read<ServicesBloc>().add(const ResetFormEvent());
+    else if(name.isEmpty) {
+      Constants.showToast(message: 'Please enter your name', type: ToastType.error);
+      return;
+    }else if(project.isEmpty) {
+      Constants.showToast(message: 'Please enter about project', type: ToastType.error);
+      return;
+    } else {
+      context.read<ServicesBloc>().add(SendRequestViaWhatsAppEvent(
+        name: name,
+        project: project,
+        costing: costing,
+        deadline: deadline,
+        phoneNumber: phoneNumber,
+      ));
+      context.read<ServicesBloc>().add(const ResetFormEvent());
+    }
   }
 
   @override
@@ -115,36 +131,60 @@ class _ServicesDialogState extends State<ServicesDialog> {
       },
       builder: (context, state) {
         return Dialog(
-          backgroundColor: Colors.white, // ✅ Proper white background
+          backgroundColor: Colors.transparent,
+          elevation: 12,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
             side: BorderSide(
-              color: Colors.grey.shade300, // ✅ Border color
+              color: Theme.of(context).dividerColor,
               width: 1.2,
             ),
           ),
           shadowColor: Colors.black,
-          elevation: 12,
-          clipBehavior: Clip.antiAlias, // ✅ Important to preserve rounded corners
+          clipBehavior: Clip.antiAlias,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            constraints: const BoxConstraints(maxWidth: 500, maxHeight: 700),
+            constraints: const BoxConstraints(
+              maxWidth: 500,
+              maxHeight: 700,
+            ),
+
             padding: const EdgeInsets.all(20),
+
+            decoration: BoxDecoration(
+              color: Theme.of(context).dialogTheme.backgroundColor ??
+                  Theme.of(context).colorScheme.surface,
+
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.build, color: Colors.blue),
+                    Icon(
+                      Icons.build,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+
                     const SizedBox(width: 8),
-                    Text(
-                      state.showForm ? 'Project Requirements' : 'Select Services',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+
+                    Expanded(
+                      child: Text(
+                        state.showForm
+                            ? 'Project Requirements'
+                            : 'Select Services',
+
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    const Spacer(),
+
                     IconButton(
                       onPressed: _closeDialog,
                       icon: const Icon(Icons.close),
@@ -170,7 +210,7 @@ class _ServicesDialogState extends State<ServicesDialog> {
                             CheckboxListTile(
                               title: Row(
                                 children: [
-                                  Icon(service.icon, size: 20, color: Colors.blue),
+                                  Icon(service.icon, size: 20, color: Theme.of(context).colorScheme.primary),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
@@ -243,19 +283,21 @@ class _ServicesDialogState extends State<ServicesDialog> {
                             width: double.infinity,
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Color(0xffeefbff),
-                              border: Border.all(color: Colors.blue.shade300),
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? const Color(0xFF1E2A30)
+                                  : const Color(0xffeefbff),
+                              border: Border.all(color: Theme.of(context).colorScheme.primary),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Selected Services:',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                                    color: Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -267,9 +309,9 @@ class _ServicesDialogState extends State<ServicesDialog> {
                                       state.isOthersSelected,
                                       state.otherServiceName,
                                     ),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 13,
-                                      color: Colors.black87,
+                                      color: Theme.of(context).textTheme.bodyLarge?.color,
                                       height: 1.5,
                                     ),
                                   ),

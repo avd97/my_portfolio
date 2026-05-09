@@ -117,7 +117,8 @@ class ProfileSection extends StatelessWidget {
                   left: isMobile ? 20 : 50,
                   child: CircleAvatar(
                     radius: avatarRadius + 5,
-                    backgroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).dialogTheme.backgroundColor ??
+    Theme.of(context).colorScheme.surface,
                     child: CircleAvatar(
                       radius: avatarRadius,
                       backgroundColor: Colors.grey.shade200,

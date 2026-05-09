@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_portfolio/core/theme_toggle_button.dart';
 import 'package:my_portfolio/features/web/bloc/home_page_bloc.dart';
 import 'package:my_portfolio/features/web/widgets/contact_row.dart';
 import 'package:my_portfolio/features/web/widgets/header_bar.dart';
@@ -22,87 +23,191 @@ class HomePage extends StatelessWidget {
     return BlocBuilder<HomePageBloc, HomePageState>(
       builder: (context, state) {
         final screen = MediaQuery.of(context).size;
-        bool isMobile = screen.width < 800;
+        bool isMobile = screen.width < 580;
 
         return Scaffold(
+          /// Header Section for Mobile
+          appBar:
+              isMobile
+                  ? AppBar(
+                    // title: Text(state.userName),
+                    title: Text('Portfolio'),
+                    actions: [
+                      const ThemeToggleButton(),
+                      PopupMenuButton<String>(
+                        icon: const Icon(Icons.more_vert_rounded),
+
+                        onSelected: (value) {
+                          switch (value) {
+                            case 'experience':
+                              print('Profile clicked');
+                              Scrollable.ensureVisible(
+                                experienceKey.currentContext!,
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.easeInOut,
+                              );
+                              break;
+
+                            case 'projects':
+                              print('Settings clicked');
+                              Scrollable.ensureVisible(
+                                projectsKey.currentContext!,
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.easeInOut,
+                              );
+                              break;
+
+                            case 'contact':
+                              print('Logout clicked');
+                              Scrollable.ensureVisible(
+                                contactKey.currentContext!,
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.easeInOut,
+                              );
+                              break;
+
+                            case 'services':
+                              print('Logout clicked');
+                              Scrollable.ensureVisible(
+                                servicesKey.currentContext!,
+                                duration: const Duration(milliseconds: 600),
+                                curve: Curves.easeInOut,
+                              );
+                              break;
+                          }
+                        },
+
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 'experience',
+                            child: Row(
+                              children: [
+                                Text('Experience'),
+                              ],
+                            ),
+                          ),
+
+                          const PopupMenuItem(
+                            value: 'projects',
+                            child: Row(
+                              children: [
+                                Text('Projects'),
+                              ],
+                            ),
+                          ),
+
+                          const PopupMenuItem(
+                            value: 'contact',
+                            child: Row(
+                              children: [
+                                Text('Contact'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'services',
+                            child: Row(
+                              children: [
+                                Text('Services'),
+                              ],
+                            ),
+                          ),
+
+                          // const PopupMenuDivider(),
+                        ],
+                      ),
+                    ],
+                    elevation: 16,
+                shadowColor: Theme.of(context).textTheme.bodyLarge?.color,
+                  )
+                  : null,
           body: Column(
             children: [
-              HeaderBar(
-                onNavItemTap: (section) {
-                  switch (section) {
-                    case 'Experience':
-                      Scrollable.ensureVisible(
-                        experienceKey.currentContext!,
-                        duration: const Duration(milliseconds: 600),
-                        curve: Curves.easeInOut,
-                      );
-                      break;
-                    case 'Projects':
-                      Scrollable.ensureVisible(
-                        projectsKey.currentContext!,
-                        duration: const Duration(milliseconds: 600),
-                        curve: Curves.easeInOut,
-                      );
-                      break;
-                    case 'Contact':
-                      Scrollable.ensureVisible(
-                        contactKey.currentContext!,
-                        duration: const Duration(milliseconds: 600),
-                        curve: Curves.easeInOut,
-                      );
-                      break;
-                    case 'Services':
-                      Scrollable.ensureVisible(
-                        servicesKey.currentContext!,
-                        duration: const Duration(milliseconds: 600),
-                        curve: Curves.easeInOut,
-                      );
-                      break;
-                    case 'Home':
-                      scrollController.animateTo(
-                        0,
-                        duration: const Duration(milliseconds: 600),
-                        curve: Curves.easeInOut,
-                      );
-                      break;
-                  }
-                },
-              ),
+              /// Header Section for Web
+              if (!isMobile)
+                HeaderBar(
+                  onNavItemTap: (section) {
+                    switch (section) {
+                      case 'Experience':
+                        Scrollable.ensureVisible(
+                          experienceKey.currentContext!,
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.easeInOut,
+                        );
+                        break;
+                      case 'Projects':
+                        Scrollable.ensureVisible(
+                          projectsKey.currentContext!,
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.easeInOut,
+                        );
+                        break;
+                      case 'Contact':
+                        Scrollable.ensureVisible(
+                          contactKey.currentContext!,
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.easeInOut,
+                        );
+                        break;
+                      case 'Services':
+                        Scrollable.ensureVisible(
+                          servicesKey.currentContext!,
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.easeInOut,
+                        );
+                        break;
+                      case 'Home':
+                        scrollController.animateTo(
+                          0,
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.easeInOut,
+                        );
+                        break;
+                    }
+                  },
+                ),
+
+              /// Home screen content
               Expanded(
                 child: Container(
-                  margin: !isMobile
-                      ? EdgeInsets.symmetric(
-                          horizontal: screen.width * 0.1,
-                        )
-                      : EdgeInsets.zero,
-                  child: ListView(
-                    controller: scrollController,
-                    children: [
-                      const SizedBox(height: 16),
-                      ProfileSection(
-                        userName: state.userName,
-                        mobileNumber: state.mobileNumber,
-                        emailId: state.emailId,
-                        profilePic: state.profilePic,
-                        bgImage: state.bgImage,
-                        isLoading: state.isLoading,
-                      ),
-                      const SizedBox(height: 20),
-                      ContactRow(
-                        key: contactKey,
-                        mobileNumber: state.mobileNumber,
-                        emailId: state.emailId,
-                        profilePic: state.profilePic,
-                        bgImage: state.bgImage,
-                      ),
-                      const Divider(),
-                      const SizedBox(height: 30),
-                      SkillsAndExperience(key: experienceKey),
-                      const SizedBox(height: 40),
-                      ServicesSection(key: servicesKey),
-                      const SizedBox(height: 40),
-                      ProjectsSection(key: projectsKey),
-                    ],
+                  margin:
+                      !isMobile
+                          ? EdgeInsets.symmetric(horizontal: screen.width * 0.1)
+                          : EdgeInsets.zero,
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(
+                      scrollbars: false,
+                    ),
+                    child: ListView(
+                      controller: scrollController,
+                    
+                      children: [
+                        const SizedBox(height: 16),
+                        ProfileSection(
+                          userName: state.userName,
+                          mobileNumber: state.mobileNumber,
+                          emailId: state.emailId,
+                          profilePic: state.profilePic,
+                          bgImage: state.bgImage,
+                          isLoading: state.isLoading,
+                        ),
+                        const SizedBox(height: 20),
+                        ContactRow(
+                          key: contactKey,
+                          mobileNumber: state.mobileNumber,
+                          emailId: state.emailId,
+                          profilePic: state.profilePic,
+                          bgImage: state.bgImage,
+                        ),
+                        const Divider(),
+                        const SizedBox(height: 30),
+                        SkillsAndExperience(key: experienceKey),
+                        const SizedBox(height: 40),
+                        ServicesSection(key: servicesKey),
+                        const SizedBox(height: 40),
+                        ProjectsSection(key: projectsKey),
+                      ],
+                    ),
                   ),
                 ),
               ),
