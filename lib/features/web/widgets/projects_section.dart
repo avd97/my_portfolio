@@ -58,7 +58,16 @@ class ProjectsSection extends StatelessWidget {
                     '• Integrated Swagger, Firebase, and Razorpay.\n'
                     '• Technical Skills: Android, Firebase, Google Map.',
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
+              _ProjectCard(
+                title: '5. Ledger Book (Income & Expense Tracker)',
+                details:
+                '• Developed an Android app to track income and expenses.\n'
+                    '• Monitored daily expenses and notified users about their spending at the end of the day.\n'
+                    '• Maintained and managed users\' income records.\n'
+                    '• Technical Skills: Android, Firebase, SQLite.',
+              ),
+              const SizedBox(height: 24),
             ],
           ),
         );

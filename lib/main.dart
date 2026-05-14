@@ -12,17 +12,26 @@ import 'package:my_portfolio/features/web/bloc/services_bloc.dart';
 import 'package:my_portfolio/features/web/screen/home_page.dart';
 import 'firebase_options.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-// 👇 Add this line explicitly
-  FirebaseDatabase.instanceFor(app: Firebase.app(), databaseURL: "https://my-portfolio-24582-default-rtdb.firebaseio.com");
+
+  FirebaseDatabase.instanceFor(
+    app: Firebase.app(),
+    databaseURL:
+    "https://my-portfolio-24582-default-rtdb.firebaseio.com",
+  );
+
+  final themeCubit = ThemeCubit();
+
+  await themeCubit.loadTheme();
 
   runApp(
-    BlocProvider(
-      create: (_) => ThemeCubit(),
+    BlocProvider.value(
+      value: themeCubit,
       child: const MyApp(),
     ),
   );
@@ -42,24 +51,6 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
 
           themeMode: themeMode,
-
-          // theme: ThemeData(
-          //   brightness: Brightness.light,
-          //   colorScheme: ColorScheme.fromSeed(
-          //     seedColor: Colors.teal,
-          //     brightness: Brightness.light,
-          //   ),
-          //   scaffoldBackgroundColor: Colors.white,
-          // ),
-          //
-          // darkTheme: ThemeData(
-          //   brightness: Brightness.dark,
-          //   colorScheme: ColorScheme.fromSeed(
-          //     seedColor: Colors.teal,
-          //     brightness: Brightness.dark,
-          //   ),
-          //   scaffoldBackgroundColor: const Color(0xFF121212),
-          // ),
 
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
