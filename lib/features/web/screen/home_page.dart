@@ -40,7 +40,6 @@ class HomePage extends StatelessWidget {
                         onSelected: (value) {
                           switch (value) {
                             case 'experience':
-                              print('Profile clicked');
                               Scrollable.ensureVisible(
                                 experienceKey.currentContext!,
                                 duration: const Duration(milliseconds: 600),
@@ -49,7 +48,6 @@ class HomePage extends StatelessWidget {
                               break;
 
                             case 'projects':
-                              print('Settings clicked');
                               Scrollable.ensureVisible(
                                 projectsKey.currentContext!,
                                 duration: const Duration(milliseconds: 600),
@@ -58,7 +56,6 @@ class HomePage extends StatelessWidget {
                               break;
 
                             case 'contact':
-                              print('Logout clicked');
                               Scrollable.ensureVisible(
                                 contactKey.currentContext!,
                                 duration: const Duration(milliseconds: 600),
@@ -67,7 +64,6 @@ class HomePage extends StatelessWidget {
                               break;
 
                             case 'services':
-                              print('Logout clicked');
                               Scrollable.ensureVisible(
                                 servicesKey.currentContext!,
                                 duration: const Duration(milliseconds: 600),
